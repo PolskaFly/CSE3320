@@ -82,7 +82,18 @@ struct _block *findFreeBlock(struct _block **last, size_t size)
 #endif
 
 #if defined BEST && BEST == 0
-   printf("TODO: Implement best fit here\n");
+    u_int64_t minDiff = 2000000;
+    struct _block *temp;
+    while (curr)
+    {
+       if((size <= curr->size) && (curr->size - size < minDiff) && (curr->free)){
+          temp = curr;
+          minDiff = curr->size - size;
+       }
+       *last = curr;
+       curr  = curr->next;
+    }
+    curr = temp;
 #endif
 
 #if defined WORST && WORST == 0
@@ -90,7 +101,12 @@ struct _block *findFreeBlock(struct _block **last, size_t size)
 #endif
 
 #if defined NEXT && NEXT == 0
-   printf("TODO: Implement next fit here\n");
+   while (curr && !(curr->free && curr->size >= size))
+   {
+       *last = curr;
+       *heapList = *curr;
+       curr  = curr->next;
+   }
 #endif
 
    return curr;
